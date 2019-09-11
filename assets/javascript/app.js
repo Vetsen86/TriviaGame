@@ -6,7 +6,7 @@ $(document).ready(function() {
         answer2: "A printer",
         answer3: "A modem",
         answer4: "A monitor",
-        correctAnswer: 3
+        correctAnswer: "answer3"
     },
 
     {
@@ -14,8 +14,8 @@ $(document).ready(function() {
         answer1: "Shaking my head",
         answer2: "Shackle mama's ham",
         answer3: "Silent murder human",
-        answer4: "Salami mega hurt",
-        correctAnswer: 1
+        answer4: "Salami mega hut",
+        correctAnswer: "answer1"
     },
 
     {
@@ -24,7 +24,7 @@ $(document).ready(function() {
         answer2: "Apple",
         answer3: "Facebook",
         answer4: "Google",
-        correctAnswer: 2
+        correctAnswer: "answer2"
     },
 
     {
@@ -33,7 +33,7 @@ $(document).ready(function() {
         answer2: "Amazon",
         answer3: "Ebay",
         answer4: "Twitter",
-        correctAnswer: 4
+        correctAnswer: "answer4"
     },
 
     {
@@ -42,7 +42,7 @@ $(document).ready(function() {
         answer2: "Instagram",
         answer3: "MySpace",
         answer4: "LinkedIn",
-        correctAnswer: 1
+        correctAnswer: "answer1"
     },
 
     {
@@ -51,7 +51,7 @@ $(document).ready(function() {
         answer2: "Dragon Quest",
         answer3: "The Legend of Zelda",
         answer4: "Tecmo Super Bowl",
-        correctAnswer: 3
+        correctAnswer: "answer3"
     },
 
     {
@@ -60,7 +60,7 @@ $(document).ready(function() {
         answer2: "Ripple",
         answer3: "Litecoin",
         answer4: "Bitcoin",
-        correctAnswer: 4
+        correctAnswer: "answer4"
     },
 
     {
@@ -69,8 +69,64 @@ $(document).ready(function() {
         answer2: "Emoji",
         answer3: "Faces",
         answer4: "Ideacons",
-        correctAnswer: 2
+        correctAnswer: "answer2"
     }];
+
+    var currentQuestion = 0;
+    var currentCorrectAnswer = questions[currentQuestion].correctAnswer;
+    var nextTimer;
+    var time = 5;
+    var timer;
+
+    function questionTimer() {
+        time--;
+        $("#time").text(time);
+        if(time === 0) {
+            clearInterval(timer);
+            timeUp();
+        }
+    }
+    
+    
+    function getNextQuestion() {
+        clearInterval(nextTimer);
+        time = 5;
+        timer = setInterval(questionTimer, 1000);
+        $(".trivia").removeClass("hidden");
+        $(".result").addClass("hidden");
+        $("#question").text(questions[currentQuestion].question);
+        $("#answer1").text(questions[currentQuestion].answer1);
+        $("#answer2").text(questions[currentQuestion].answer2);
+        $("#answer3").text(questions[currentQuestion].answer3);
+        $("#answer4").text(questions[currentQuestion].answer4);
+        currentCorrectAnswer = questions[currentQuestion].correctAnswer;
+    }
+
+    
+
+    function nextQuestionTimer() {
+        nextTimer = setInterval(getNextQuestion, 5000);
+    }
+
+    function timeUp() {
+        $(".trivia").addClass("hidden");
+        $(".result").removeClass("hidden");
+        $("#right-wrong").text("Time's Up!");
+        $("#rightAnswer").text(questions[currentQuestion][currentCorrectAnswer]);
+        currentQuestion++;
+        nextQuestionTimer();
+    }
+
+    
+    
+
+    
+
+    $("#start").on("click", function() {
+        $("#start").addClass("hidden");
+        getNextQuestion(currentQuestion);
+        
+    });
 
 
 });
