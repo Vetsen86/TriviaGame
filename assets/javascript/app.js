@@ -77,6 +77,11 @@ $(document).ready(function() {
     var nextTimer;
     var time = 5;
     var timer;
+    var unanswered = 0;
+    var finalTimer;
+    var correct = 0;
+    var incorrect = 0;
+    var answer = "";
 
     function questionTimer() {
         time--;
@@ -108,24 +113,36 @@ $(document).ready(function() {
         nextTimer = setInterval(getNextQuestion, 5000);
     }
 
+    function finalQuestionTimer() {
+        finalTimer = setInterval(results, 5000);
+    }
+
+    function results() {
+        clearInterval(finalTimer);
+        $(".result").addClass("hidden");
+        $(".finish").removeClass("hidden");
+        $("#numberCorrect").text(correct);
+        $("#numberIncorrect").text(incorrect);
+        $("#unanswered").text(unanswered);
+    }
+
     function timeUp() {
         $(".trivia").addClass("hidden");
         $(".result").removeClass("hidden");
         $("#right-wrong").text("Time's Up!");
         $("#rightAnswer").text(questions[currentQuestion][currentCorrectAnswer]);
         currentQuestion++;
-        nextQuestionTimer();
+        unanswered++;
+        if (currentQuestion < questions.length) {
+            nextQuestionTimer();
+        } else if (currentQuestion === questions.length) {
+            finalQuestionTimer();
+        }
     }
-
-    
-    
-
-    
 
     $("#start").on("click", function() {
         $("#start").addClass("hidden");
         getNextQuestion(currentQuestion);
-        
     });
 
 
