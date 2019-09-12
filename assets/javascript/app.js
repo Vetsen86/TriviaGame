@@ -75,12 +75,12 @@ $(document).ready(function() {
     var currentQuestion = 0;
     var currentCorrectAnswer = questions[currentQuestion].correctAnswer;
     var nextTimer;
-    var time = 5;
+    var time = 30;
     var timer;
     var unanswered = 0;
     var finalTimer;
-    var correct = 0;
-    var incorrect = 0;
+    var numberCorrect = 0;
+    var numberIncorrect = 0;
     var answer = "";
 
     function questionTimer() {
@@ -95,7 +95,8 @@ $(document).ready(function() {
     
     function getNextQuestion() {
         clearInterval(nextTimer);
-        time = 5;
+        time = 30;
+        $("#time").text(time);
         timer = setInterval(questionTimer, 1000);
         $(".trivia").removeClass("hidden");
         $(".result").addClass("hidden");
@@ -119,10 +120,12 @@ $(document).ready(function() {
 
     function results() {
         clearInterval(finalTimer);
+        clearInterval(nextTimer);
+        clearInterval(timer);
         $(".result").addClass("hidden");
         $(".finish").removeClass("hidden");
-        $("#numberCorrect").text(correct);
-        $("#numberIncorrect").text(incorrect);
+        $("#numberCorrect").text(numberCorrect);
+        $("#numberIncorrect").text(numberIncorrect);
         $("#unanswered").text(unanswered);
     }
 
@@ -140,9 +143,49 @@ $(document).ready(function() {
         }
     }
 
+    function correct() {
+        $(".trivia").addClass("hidden");
+        $(".result").removeClass("hidden");
+        $("#right-wrong").text("Correct!");
+        $("#rightAnswer").text(questions[currentQuestion][currentCorrectAnswer]);
+        currentQuestion++;
+        numberCorrect++;
+        if(currentQuestion < questions.length) {
+            clearInterval(timer);
+            nextQuestionTimer();
+        } else if (currentQuestion === questions.length) {
+            finalQuestionTimer();
+        }
+    }
+
+    function incorrect() {
+        $(".trivia").addClass("hidden");
+        $(".result").removeClass("hidden");
+        $("#right-wrong").text("Sorry, that's wrong!");
+        $("#rightAnswer").text(questions[currentQuestion][currentCorrectAnswer]);
+        currentQuestion++;
+        numberIncorrect++;
+        if(currentQuestion < questions.length) {
+            clearInterval(timer);
+            nextQuestionTimer();
+        } else if (currentQuestion === questions.length) {
+            finalQuestionTimer();
+        }
+    }
+
     $("#start").on("click", function() {
         $("#start").addClass("hidden");
         getNextQuestion(currentQuestion);
+    });
+
+    $(".answer").on("click", function() {
+        answer = this.id;
+        console.log(answer);
+        if (answer === currentCorrectAnswer) {
+            correct();
+        } else {
+            incorrect();
+        }
     });
 
 
